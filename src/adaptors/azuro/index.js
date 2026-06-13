@@ -3,6 +3,11 @@ const utils = require('../utils');
 
 const DUNE_QUERY_ID = 7653028; // per-pool V3 snapshot view (reads balances base 7653018)
 
+const LEGACY_POOL_ADDRESSES = {
+  '0x1a0612fe7d0def35559a1f71ff155e344ae69d2c':
+    '0x0fa7fb5407ea971694652e6e16c12a52625de1b8',
+};
+
 const apy = async () => {
   try {
     const { data } = await axios.get(
@@ -13,7 +18,7 @@ const apy = async () => {
     return (data?.result?.rows || [])
       .filter((r) => Number(r.tvl_usd) > 1000)
       .map((r) => ({
-        pool: r.pool_address,
+        pool: LEGACY_POOL_ADDRESSES[r.pool_address] || r.pool_address,
         chain: utils.formatChain(r.chain),
         project: 'azuro',
         symbol: r.symbol,
